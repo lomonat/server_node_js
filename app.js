@@ -1,5 +1,10 @@
 const http = require('http');
 const fs = require("fs");
+const https = require('https');
+const ip = require("ip");
+const geolocator = require("geolocator");
+const where = require('node-where');
+
 
 const server = http.createServer((req, res) => {
   if(req.url === '/') {
@@ -53,11 +58,32 @@ const server = http.createServer((req, res) => {
     });
   }
 
+  if(req.url === '/whoami') {
+    // GEOlocation information will be accessed with help of ipStack
+    //https://ipstack.com/quickstart
+    const userIp = ip.address();
+    console.log(userIp);
+    //Get request with help of api ipdata
+    //https://www.twilio.com/blog/2017/08/http-requests-in-node-js.html
 
-  if(req.url === '/api/courses') {
-//    res.write(JSON.stringify([1, 2, 3]));
-    res.end();
+    https.get("https://api.ipdata.co", (resp) => {
+    let data = '';
+
+    // A chunk of data has been recieved.
+    resp.on('data', (chunk) => {
+      data += chunk;
+    });
+
+    // The whole response has been received. Print out the result.
+    resp.on('end', () => {
+      console.log(JSON.parse(data));
+    });
+
+  }).on("error", (err) => {
+    console.log("Error: " + err.message);
+});
   }
 });
+
 server.listen(3000);
 console.log("Listening on port 3000..");
