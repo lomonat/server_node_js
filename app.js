@@ -1,15 +1,10 @@
 const http = require('http');
 const fs = require("fs");
 const https = require('https');
-const { detect } = require('detect-browser');
 const useragent = require('useragent');
-var speedTest = require('speedtest-net');
-//var locale2 = require('browser-locale');
-var mobile = require('is-mobile');
-var isMobile = require('ismobilejs');
-var ip = require('ip');
-var locale = require("locale");
-var nodeThen = require('node-then');
+const speedTest = require('speedtest-net');
+const mobile = require('is-mobile');
+const locale = require("locale");
 
 const months = ["January", "February", "March", "April", "May", "June", "July",
          "August", "September", "October", "November", "December"];
@@ -20,8 +15,7 @@ const browserslinks = ['https://upload.wikimedia.org/wikipedia/commons/thumb/4/4
 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsr4ty4dNFIalHmqhrNNMwnYe0HBzt5cPxb2G2od66N1tIwSuY',
 'https://i1.wp.com/it-here.ru/wp-content/uploads/2015/03/Problemy-s-Safari-iOS-8.21.jpg?fit=590%2C332&ssl=1',
 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQKPXiwTTHS87WPoSqLL4dPVhC-EZhldL-W5hR2a3WGHcfhEV0Lg',
-]
-var ips = [];
+];
 
 // parse minutes if it has only 1 digit -> append 0, 5 -> 05
  function minuresParser(minutes) {
@@ -62,7 +56,7 @@ const server = http.createServer((req, res) => {
           }
           const response =  currentDayAndTime + 'amount of visits is ' + data;
           console.log(response)
-         res.write(response);
+          res.write(response);
           res.end();
 
         });
@@ -75,10 +69,9 @@ const server = http.createServer((req, res) => {
     }
   if(req.url === '/adapt2user') {
     var msg = "";
-fetchDataFoAdapting(msg, req, res);
-
-    }
-});
+      fetchDataFoAdapting(msg, req, res);
+          }
+      });
 
 
 function fetchDataFoAdapting(msg, req, res) {
@@ -88,7 +81,6 @@ function fetchDataFoAdapting(msg, req, res) {
     var locales = new locale.Locales(req.headers["accept-language"]);
 
     msg = msg +  "Your language is " + locales.best() + "\n";
-
 
     for (var i in browsers) {
     if(useragent.is(req.headers['user-agent'])[browsers[i]]) {
@@ -101,7 +93,7 @@ function fetchDataFoAdapting(msg, req, res) {
 
     var colorDiv = ' ';
     if(!mobile()) {
-       colorDiv = '<div style="background-color: #ffff42; width: 50px; height: 50px"></div>';
+       colorDiv = '<div style="background-color: #ffff42; width: 50px; height: 50px"></div><p>You see this yellow square because you use not mobile ver</p>';
     }
     msg = msg + colorDiv;
     res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -125,7 +117,6 @@ function fetchData(req, res) {
   // The whole response has been received. Print out the result.
   resp.on('end', () => {
     var dataParsed = JSON.parse(data);
-    const browser = detect();
     var agent = useragent.parse(req.headers['user-agent']);
     var agentOS = agent.os.toString();
     var agentBrowser = agent.toAgent();
@@ -150,7 +141,6 @@ function fetchData(req, res) {
     });
 
   });
-
 
   }).on("error", (err) => {
     console.log("Error: " + err.message);

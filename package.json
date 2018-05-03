@@ -17,17 +17,9 @@
   },
   "homepage": "https://github.com/lomonat/server_node_js#readme",
   "dependencies": {
-    "browser-detect": "^0.2.27",
-    "detect-browser": "^2.4.0",
-    "get-browser-language": "^1.0.0",
-    "in-browser-language": "^1.0.2",
-    "ip": "^1.1.5",
     "is-mobile": "^0.2.2",
-    "ismobilejs": "^0.4.1",
     "locale": "^0.1.0",
-    "node-then": "^0.1.0",
     "speedtest-net": "^1.4.2",
     "useragent": "^2.3.0",
-    "window": "^4.2.5"
   }
 }
