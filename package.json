@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/lomonat/server_node_js.git"
   },
-  "author": "Lomova Natalia",
+  "author": "Lomova N",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/lomonat/server_node_js/issues"
@@ -20,6 +20,6 @@
     "is-mobile": "^0.2.2",
     "locale": "^0.1.0",
     "speedtest-net": "^1.4.2",
-    "useragent": "^2.3.0",
+    "useragent": "^2.3.0"
   }
 }
