@@ -4,13 +4,26 @@ const https = require('https');
 const { detect } = require('detect-browser');
 const useragent = require('useragent');
 var speedTest = require('speedtest-net');
-
+//var locale2 = require('browser-locale');
+var mobile = require('is-mobile');
+var isMobile = require('ismobilejs');
+var ip = require('ip');
+var locale = require("locale");
+var nodeThen = require('node-then');
 
 const months = ["January", "February", "March", "April", "May", "June", "July",
          "August", "September", "October", "November", "December"];
+const browsers = ["opera", "ie", "chrome", "safari", "mobile_safari", "firefox"];
+const browserslinks = ['https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Opera_2015_icon.svg/1200px-Opera_2015_icon.svg.png',
+'https://i0.wp.com/wptavern.com/wp-content/uploads/2017/04/ie-logo.jpg?ssl=1',
+'https://www1-lw.xda-cdn.com/files/2018/01/Chrome-Feature-Image-Background-Colour-810x298_c.png',
+'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsr4ty4dNFIalHmqhrNNMwnYe0HBzt5cPxb2G2od66N1tIwSuY',
+'https://i1.wp.com/it-here.ru/wp-content/uploads/2015/03/Problemy-s-Safari-iOS-8.21.jpg?fit=590%2C332&ssl=1',
+'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQKPXiwTTHS87WPoSqLL4dPVhC-EZhldL-W5hR2a3WGHcfhEV0Lg',
+]
+var ips = [];
 
-
- // parse minutes if it has only 1 digit -> append 0, 5 -> 05
+// parse minutes if it has only 1 digit -> append 0, 5 -> 05
  function minuresParser(minutes) {
    if(minutes.toString().length < 2){
      minutes = minutes.toString()+0;
@@ -49,7 +62,7 @@ const server = http.createServer((req, res) => {
           }
           const response =  currentDayAndTime + 'amount of visits is ' + data;
           console.log(response)
-          res.write(response);
+         res.write(response);
           res.end();
 
         });
@@ -60,7 +73,42 @@ const server = http.createServer((req, res) => {
   if(req.url === '/whoami') {
       fetchData(req, res);
     }
+  if(req.url === '/adapt2user') {
+    var msg = "";
+fetchDataFoAdapting(msg, req, res);
+
+    }
 });
+
+
+function fetchDataFoAdapting(msg, req, res) {
+
+   // choose the best suited language for user
+   //https://github.com/florrain/locale
+    var locales = new locale.Locales(req.headers["accept-language"]);
+
+    msg = msg +  "Your language is " + locales.best() + "\n";
+
+
+    for (var i in browsers) {
+    if(useragent.is(req.headers['user-agent'])[browsers[i]]) {
+    msg = msg + "and you are using " + browsers[i];
+    msg = '<div>'+ msg+'</div><img src="' + browserslinks[i] + '">';
+    break;
+      }
+    }
+
+
+    var colorDiv = ' ';
+    if(!mobile()) {
+       colorDiv = '<div style="background-color: #ffff42; width: 50px; height: 50px"></div>';
+    }
+    msg = msg + colorDiv;
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.write(msg);
+    res.end();
+}
+
 
 function fetchData(req, res) {
   //Get request with help of api ipdata
@@ -76,14 +124,13 @@ function fetchData(req, res) {
 
   // The whole response has been received. Print out the result.
   resp.on('end', () => {
-   var dataParsed = JSON.parse(data);
+    var dataParsed = JSON.parse(data);
     const browser = detect();
     var agent = useragent.parse(req.headers['user-agent']);
     var agentOS = agent.os.toString();
     var agentBrowser = agent.toAgent();
     var agentDevice = agent.device.toString();
-
-    var test = speedTest({maxTime: 5000});
+    var test = speedTest({maxTime: 1000});
 
     test.on('data', data => {
       var msg = "Your ip is " + dataParsed.ip + ", your city is " + dataParsed.city
